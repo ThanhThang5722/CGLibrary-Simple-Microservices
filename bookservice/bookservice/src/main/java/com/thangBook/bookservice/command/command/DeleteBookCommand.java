@@ -1,6 +1,7 @@
 package com.thangBook.bookservice.command.command;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateBookCommand {
-
+public class DeleteBookCommand {
     @TargetAggregateIdentifier
     private String id;
-
-    private String name;
-
-    private String author;
-
-    private Boolean isReady;
 }
