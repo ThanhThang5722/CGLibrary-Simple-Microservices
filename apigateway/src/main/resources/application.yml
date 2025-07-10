@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: gateway-service
+  data:
+    redis:
+      port: 6379
+      host: localhost
   cloud:
     gateway.server.webflux:
       discovery:
@@ -18,6 +22,14 @@ spring:
           uri: lb://employeeservice
           predicates:
             - Path=/api/v1/employees/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter:
+                  replenishRate: 10
+                  burstCapacity: 20
+                  requestedTokens: 1
+            - KeyAuthFilter
     eureka:
       client:
         serviceUrl:
