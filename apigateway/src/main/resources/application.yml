@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: gateway-service
+    name: apigateway
   data:
     redis:
       port: 6379
-      host: localhost
+      host: redis
   cloud:
     gateway.server.webflux:
       discovery:
@@ -17,7 +17,18 @@ spring:
         - id: bookservice
           uri: lb://bookservice
           predicates:
-            - Path=/books/**
+            - Path=/api/v1/books/**
+          filters:
+            - name: RewritePath
+              args:
+                /api/v1/books/(?<segment>.*) = /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter:
+                  replenishRate: 10
+                  burstCapacity: 20
+                  requestedTokens: 1
+            - KeyAuthFilter
         - id: employeeservice
           uri: lb://employeeservice
           predicates:
@@ -30,20 +41,13 @@ spring:
                   burstCapacity: 20
                   requestedTokens: 1
             - KeyAuthFilter
-    eureka:
-      client:
-        serviceUrl:
-          defaultZone: http://localhost:8761/eureka/
-        fetchRegistry: true
-        registerWithEureka: true
-    loadbalancer:
-        enabled: true
 
-eureka.:
+
+eureka:
   instance:
-    hostname: localhost
+    hostname: apigateway
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discoverserver:8761/eureka
