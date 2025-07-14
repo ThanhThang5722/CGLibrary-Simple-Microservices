@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.thangBook.bookservice.command.data.Book;
 import com.thangBook.bookservice.command.data.BookRepository;
+import com.thangBook.commonservice.event.BookRollBackStatusEvent;
+import com.thangBook.commonservice.event.BookUpdateStatusEvent;
 
 @Component
 public class BooksEventHandler {
@@ -36,8 +38,26 @@ public class BooksEventHandler {
     }
 
     @EventHandler
+    public void on(BookUpdateStatusEvent event) {
+        Optional<Book> oldBook = bookRepository.findById(event.getBookId());
+        oldBook.ifPresent(book -> {
+            book.setIsReady(event.getIsReady());
+            bookRepository.save(book);
+        });
+    }
+
+    @EventHandler
     public void on(BookDeletedEvent event) {
         Optional<Book> oldBook = bookRepository.findById(event.getId());
         oldBook.ifPresent(book -> bookRepository.delete(book));
+    }
+
+    @EventHandler
+    public void on(BookRollBackStatusEvent event) {
+        Optional<Book> oldBook = bookRepository.findById(event.getBookId());
+        oldBook.ifPresent(book -> {
+            book.setIsReady(event.getIsReady());
+            bookRepository.save(book);
+        });
     }
 }

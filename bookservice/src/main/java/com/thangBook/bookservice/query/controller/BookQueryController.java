@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.thangBook.bookservice.query.model.BookResponseModel;
 import com.thangBook.bookservice.query.queries.GetAllBookQuery;
-import com.thangBook.bookservice.query.queries.GetBookDetailQuery;
+import com.thangBook.commonservice.queries.GetBookDetailQuery;
 import com.thangBook.commonservice.service.KafkaService;
+import com.thangBook.commonservice.model.BookResponseCommonModel;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -27,15 +27,15 @@ public class BookQueryController {
     private KafkaService kafkaService;
 
     @GetMapping
-    public List<BookResponseModel> getAllBooks() {
+    public List<BookResponseCommonModel> getAllBooks() {
         GetAllBookQuery query = new GetAllBookQuery();
-        List<BookResponseModel> results = queryGateway.query(query, ResponseTypes.multipleInstancesOf(BookResponseModel.class)).join();
+        List<BookResponseCommonModel> results = queryGateway.query(query, ResponseTypes.multipleInstancesOf(BookResponseCommonModel.class)).join();
         return results;
     }
     @GetMapping("/{bookId}")
-    public BookResponseModel getBookDetail(@PathVariable String bookId) {
+    public BookResponseCommonModel getBookDetail(@PathVariable String bookId) {
         GetBookDetailQuery query = new GetBookDetailQuery(bookId);
-        BookResponseModel result = queryGateway.query(query, ResponseTypes.instanceOf(BookResponseModel.class)).join();
+        BookResponseCommonModel result = queryGateway.query(query, ResponseTypes.instanceOf(BookResponseCommonModel.class)).join();
         
         return result;
     }

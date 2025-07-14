@@ -6,9 +6,9 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.thangBook.commonservice.queries.GetDetailEmployeeQuery;
 import com.thangBook.employeeservice.query.model.EmployeeResponseModel;
 import com.thangBook.employeeservice.query.queries.GetAllEmployeeQuery;
-import com.thangBook.employeeservice.query.queries.GetDetailEmployeeQuery;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

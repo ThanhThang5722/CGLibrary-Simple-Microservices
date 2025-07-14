@@ -11,21 +11,20 @@ import org.springframework.stereotype.Component;
 
 import com.thangBook.bookservice.command.data.Book;
 import com.thangBook.bookservice.command.data.BookRepository;
-import com.thangBook.bookservice.query.model.BookResponseModel;
 import com.thangBook.bookservice.query.queries.GetAllBookQuery;
-import com.thangBook.bookservice.query.queries.GetBookDetailQuery;
-
+import com.thangBook.commonservice.queries.GetBookDetailQuery;
+import com.thangBook.commonservice.model.BookResponseCommonModel;
 @Component
 public class BookProjection {
     @Autowired
     private BookRepository bookRepository;
 
     @QueryHandler
-    public List<BookResponseModel> handle(GetAllBookQuery query) {
+    public List<BookResponseCommonModel> handle(GetAllBookQuery query) {
         List<Book> list = bookRepository.findAll();
 
-        List<BookResponseModel> results = list.stream().map(book -> {
-            BookResponseModel model = new BookResponseModel();
+        List<BookResponseCommonModel> results = list.stream().map(book -> {
+            BookResponseCommonModel model = new BookResponseCommonModel();
             BeanUtils.copyProperties(book, model);
             return model;
         }).toList();
@@ -33,8 +32,8 @@ public class BookProjection {
     }
 
     @QueryHandler
-    public BookResponseModel handle(GetBookDetailQuery query) throws Exception {
-        BookResponseModel model = new BookResponseModel();
+    public BookResponseCommonModel handle(GetBookDetailQuery query) throws Exception {
+        BookResponseCommonModel model = new BookResponseCommonModel();
         Book book = bookRepository.findById(query.getId()).orElseThrow(() -> new Exception("Not found Book with BookId: "+ query.getId()));
         BeanUtils.copyProperties(book, model);
         return model;
